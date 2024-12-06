@@ -11,8 +11,17 @@ def take_screenshot(url):
         # 서버로 스크린샷 요청
         response = requests.post('http://localhost:5000/screenshot', json={'url': url})
         if response.status_code == 201:
-            filename = response.json().get('filename')
-            success_dict[url] = filename
+            data = response.json()
+            filename = data.get('filename')
+            file_size = data.get('file_size')
+            upload_date = data.get('upload_date')
+            
+            # success_dict에 저장
+            success_dict[url] = {
+                'filename': filename,
+                'file_size': file_size,
+                'upload_date': upload_date
+            }
             print(f"스캔 완료: {url}")
         else:
             print(f"스크린샷 실패: {response.json().get('error')}")
@@ -24,11 +33,11 @@ def show_successful_urls():
     지금까지 성공한 URL 목록을 출력
     """
     if success_dict:
-        print("\n성공적인 스크린샷 요청 목록:")
+        print("\n성공한 스크린샷 요청 목록:")
         for url, file_path in success_dict.items():
-            print(f"URL: {url}")
+            print(f"{url}: {success_dict[url]}")
     else:
-        print("성공적인 요청이 없습니다.")
+        print("성공한 요청이 없습니다.")
 
 def download_screenshot():
     """

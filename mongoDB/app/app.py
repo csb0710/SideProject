@@ -67,7 +67,15 @@ def take_screenshot():
         # GridFS에 저장, filename을 메타데이터로 사용
         file_id = fs.put(screenshot_data, filename=filename)
 
-        return jsonify({"message": "Screenshot saved to GridFS", "file_id": str(file_id), "filename": filename}), 201
+        # 저장된 파일의 메타데이터 조회
+        file_metadata = fs.find_one({"_id": file_id})
+        
+        # 메타데이터 리턴
+        return jsonify({
+            "filename": filename,
+            "file_size": file_metadata.length,
+            "upload_date": file_metadata.upload_date
+        }), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
