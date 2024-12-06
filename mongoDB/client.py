@@ -45,7 +45,7 @@ def download_screenshot():
     """
     url = input("다운로드할 URL을 입력하세요: ")
     if url in success_dict:
-        file_path = success_dict[url]
+        file_path = success_dict[url]['filename']
         try:
             # 서버로 다운로드 요청
             response = requests.post('http://localhost:5000/download', json={'url': file_path})
