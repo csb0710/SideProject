@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+service Service1 {
+  rpc ProcessData (ServiceRequest) returns (ServiceResponse);
+  rpc GetData (ServiceRequest) returns (ServiceResponse);
+  rpc PostData (ServiceRequest) returns (ServiceResponse);
+  rpc DeleteData (ServiceRequest) returns (ServiceResponse);
+}
+
+service Service2 {
+  rpc ProcessData (ServiceRequest) returns (ServiceResponse);
+  rpc ExchangeData (ExchangeRequest) returns (ExchangeResponse);
+}
+
+message ServiceRequest {
+  string message = 1;
+}
+
+message ServiceResponse {
+  string result = 1;
+}
+
+message ExchangeRequest {
+  string input = 1;
+}
+
+message ExchangeResponse {
+  string output = 1;
+}

@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  # Gateway 서비스 (Python)
+  gateway:
+    build:
+      context: ./gRPC-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - service1
+      - service2
+    networks:
+      - grpc_network
+
+  # Service1 서비스 (Python)
+  service1:
+    build:
+      context: ./service1
+    ports:
+      - "50051:50051"
+    environment:
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - service2
+    networks:
+      - grpc_network
+
+  # Service2 서비스 (Go)
+  service2:
+    build:
+      context: ./service2
+    ports:
+      - "50052:50052"
+    networks:
+      - grpc_network
+
+networks:
+  grpc_network:
+    driver: bridge
