@@ -5,7 +5,6 @@ import services_pb2_grpc
 
 app = Flask(__name__)
 
-# 간단한 토큰 관리 (딕셔너리 형태)
 ACCESS_TOKENS = {
     "service1": "token_service1",
     "service2": "token_service2",

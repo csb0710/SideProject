@@ -66,8 +66,8 @@ def call_service1_delete():
     if not token:
         return
     message = input("Enter the message to delete: ")
-    url = f"{BASE_URL}/service1/{message}"  # URL에 메시지를 포함시킴
-    headers = {"Authorization": token}  # Authorization 헤더 추가
+    url = f"{BASE_URL}/service1/{message}"
+    headers = {"Authorization": token}
     send_request("DELETE", url, headers)
 
 def call_service1_post():

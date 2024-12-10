@@ -3,10 +3,7 @@ import mysql.connector
 from mysql.connector import Error
 from dotenv import load_dotenv
 
-# .env 파일에서 환경 변수 로드
 load_dotenv()
-
-# 환경 변수 설정
 MYSQL_HOST = os.getenv("MYSQL_HOST")
 MYSQL_USER = os.getenv("MYSQL_USER")
 MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD")
@@ -14,7 +11,6 @@ MYSQL_DATABASE = os.getenv("MYSQL_DATABASE")
 
 # 데이터베이스 연결 함수
 def connect_to_database():
-    """MySQL 데이터베이스에 연결."""
     try:
         connection = mysql.connector.connect(
             host=MYSQL_HOST,
@@ -27,10 +23,8 @@ def connect_to_database():
             cursor.execute(f"CREATE DATABASE IF NOT EXISTS {MYSQL_DATABASE};")
             connection.commit()
 
-            # Now, connect to the specific database
             connection.database = MYSQL_DATABASE
             print(f"Connected to database: {MYSQL_DATABASE}")
-            return connection
             return connection
     except Error as e:
         print(f"❌ Error connecting to database: {e}")
@@ -66,7 +60,7 @@ def initialize_database(connection):
         );
         """)
 
-        # 3. 기존 트리거 삭제 및 생성
+        # 3. 트리거 생성
         cursor.execute("DROP TRIGGER IF EXISTS log_deleted_data;")
         cursor.execute("""
         CREATE TRIGGER log_deleted_data
@@ -139,6 +133,17 @@ def initialize_database(connection):
             SUM(salary) AS total_salary
         FROM employee_salary
         GROUP BY department;
+        """)
+        
+        # 8. 사원 목록 뷰 생성
+        cursor.execute("""
+        CREATE OR REPLACE VIEW employee_list_view AS
+        SELECT
+            id,
+            employee_name AS name,
+            department
+        FROM employee_salary
+        ORDER BY id;
         """)
 
         connection.commit()
@@ -221,6 +226,20 @@ def view_department_summary(connection):
             print(f"{row[0]} | {row[1]} | {row[2]}")
     except Error as e:
         print(f"❌ Error fetching department summary: {e}")
+        
+def view_employee_list(connection):
+    """Displays a list of employees with their ID, name, and department."""
+    try:
+        cursor = connection.cursor()
+        cursor.execute("SELECT * FROM employee_list_view;")
+        rows = cursor.fetchall()
+        print("ID | Name             | Department")
+        print("-" * 40)
+        for row in rows:
+            print(f"{row[0]:<3} | {row[1]:<16} | {row[2]}")
+    except Error as e:
+        print(f"❌ Error fetching employee list: {e}")
+
 
 def restore_specific_employee(connection):
     """Restores specific employee data using a stored procedure."""
@@ -254,7 +273,8 @@ def main():
             print("3. View Department Summary")
             print("4. Delete Employee (Simulate Recovery)")
             print("5. Restore Specific Employee")
-            print("6. Exit")
+            print("6. View Employee List")
+            print("7. Exit")
             choice = input("Enter your choice: ")
 
             if choice == "1":
@@ -268,6 +288,8 @@ def main():
             elif choice == "5":
                 restore_specific_employee(connection)
             elif choice == "6":
+                view_employee_list(connection)
+            elif choice == "7":
                 print("Exiting...")
                 break
             else:

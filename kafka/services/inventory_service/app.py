@@ -4,18 +4,17 @@ import random
 import time
 import os
 
+# Kafka 설정
 KAFKA_BROKER = os.getenv('KAFKA_BROKER', 'localhost:9092')
 TOPIC = "inventory-topic"
 
+# Kafka Producer 생성
 producer = KafkaProducer(
     bootstrap_servers=KAFKA_BROKER,
     value_serializer=lambda v: json.dumps(v).encode('utf-8')
 )
 
 def generate_inventory_event():
-    """
-    재고 이벤트 생성 함수.
-    """
     item_ids = ["item001", "item002", "item003", "item004", "item005"]
     event_types = ["STOCK_ADDED", "STOCK_REMOVED", "STOCK_UPDATED"]
     
@@ -33,9 +32,6 @@ def generate_inventory_event():
     return event
 
 def send_inventory_event():
-    """
-    Kafka로 재고 이벤트를 전송하는 함수.
-    """
     try:
         event = generate_inventory_event()
         producer.send(TOPIC, value=event)

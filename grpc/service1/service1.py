@@ -3,13 +3,12 @@ import grpc
 import services_pb2
 import services_pb2_grpc
 
-# gRPC 클라이언트를 통해 Service2와 통신
 import grpc
 
 data_list = []
 
 def call_service2(input_data):
-    with grpc.insecure_channel('service2:50052') as channel:  # Service2 주소
+    with grpc.insecure_channel('service2:50052') as channel:
         stub = services_pb2_grpc.Service2Stub(channel)
         response = stub.ExchangeData(services_pb2.ExchangeRequest(input=input_data))
         return response.output
@@ -30,7 +29,6 @@ class Service1Servicer(services_pb2_grpc.Service1Servicer):
         return services_pb2.ServiceResponse(result=", ".join(data_list))
     
     def PostData(self, request, context):
-        # 리스트에 새 값 추가
         data_list.append(request.message)
         return services_pb2.ServiceResponse(result=", ".join(data_list))
 

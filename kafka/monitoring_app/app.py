@@ -28,16 +28,14 @@ def monitor_logs():
             for message in consumer:
                 log_data = message.value
                 service = log_data.get('service', 'Unknown') 
-                # 타임스탬프 처리 (Unix 타임스탬프를 문자열로 변환)
-                timestamp = log_data.get('timestamp', time.time())  # 기본값은 현재 시간
+                timestamp = log_data.get('timestamp', time.time())
                 if isinstance(timestamp, float):
                     timestamp = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(timestamp))
 
-                # 타임스탬프 먼저 출력하고, 나머지 로그 출력
                 print(f"[LOG] Time: {timestamp}, Service: {service}, Log: {log_data}")
         except Exception as e:
             print(f"[ERROR] Log monitoring app encountered an error: {e}")
-            time.sleep(5)  # 5초 대기 후 재시도
+            time.sleep(5)
 
 if __name__ == "__main__":
     monitor_logs()

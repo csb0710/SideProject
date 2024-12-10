@@ -25,7 +25,6 @@ services:
       start_period: 30s
       timeout: 10s
 
-  # Inventory Service (5 Instances)
   inventory-service-1:
     build:
       context: ./services/inventory_service
@@ -34,7 +33,7 @@ services:
       KAFKA_BROKER: kafka:9092
     depends_on:
       kafka:
-        condition: service_healthy  # Kafka가 준비되었을 때만 시작
+        condition: service_healthy
 
   inventory-service-2:
     build:
@@ -56,27 +55,6 @@ services:
       kafka:
         condition: service_healthy
 
-  # inventory-service-4:
-  #   build:
-  #     context: ./services/inventory_service
-  #     dockerfile: Dockerfile
-  #   environment:
-  #     KAFKA_BROKER: kafka:9092
-  #   depends_on:
-  #     kafka:
-  #       condition: service_healthy
-
-  # inventory-service-5:
-  #   build:
-  #     context: ./services/inventory_service
-  #     dockerfile: Dockerfile
-  #   environment:
-  #     KAFKA_BROKER: kafka:9092
-  #   depends_on:
-  #     kafka:
-  #       condition: service_healthy
-
-  # User Service (5 Instances)
   user-service-1:
     build:
       context: ./services/user_service
@@ -107,27 +85,6 @@ services:
       kafka:
         condition: service_healthy
 
-  # user-service-4:
-  #   build:
-  #     context: ./services/user_service
-  #     dockerfile: Dockerfile
-  #   environment:
-  #     KAFKA_BROKER: kafka:9092
-  #   depends_on:
-  #     kafka:
-  #       condition: service_healthy
-
-  # user-service-5:
-  #   build:
-  #     context: ./services/user_service
-  #     dockerfile: Dockerfile
-  #   environment:
-  #     KAFKA_BROKER: kafka:9092
-  #   depends_on:
-  #     kafka:
-  #       condition: service_healthy
-
-  # Payment Service (5 Instances)
   payment-service-1:
     build:
       context: ./services/payment_service
@@ -158,27 +115,6 @@ services:
       kafka:
         condition: service_healthy
 
-  # payment-service-4:
-  #   build:
-  #     context: ./services/payment_service
-  #     dockerfile: Dockerfile
-  #   environment:
-  #     KAFKA_BROKER: kafka:9092
-  #   depends_on:
-  #     kafka:
-  #       condition: service_healthy
-
-  # payment-service-5:
-  #   build:
-  #     context: ./services/payment_service
-  #     dockerfile: Dockerfile
-  #   environment:
-  #     KAFKA_BROKER: kafka:9092
-  #   depends_on:
-  #     kafka:
-        # condition: service_healthy
-
-  # Order Service (5 Instances)
   order-service-1:
     build:
       context: ./services/order_service
@@ -209,27 +145,6 @@ services:
       kafka:
         condition: service_healthy
 
-  # order-service-4:
-  #   build:
-  #     context: ./services/order_service
-  #     dockerfile: Dockerfile
-  #   environment:
-  #     KAFKA_BROKER: kafka:9092
-  #   depends_on:
-  #     kafka:
-  #       condition: service_healthy
-
-  # order-service-5:
-  #   build:
-  #     context: ./services/order_service
-  #     dockerfile: Dockerfile
-  #   environment:
-  #     KAFKA_BROKER: kafka:9092
-  #   depends_on:
-  #     kafka:
-  #       condition: service_healthy
-
-  # Monitoring Services (4 Parts)
   monitor_part1:
     build:
       context: ./monitoring_app
