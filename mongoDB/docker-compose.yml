@@ -21,6 +21,12 @@ services:
       - mongo_data:/data/db  # MongoDB 데이터를 유지하기 위한 볼륨
     ports:
       - "27017:27017"
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
 
 volumes:
   mongo_data:
