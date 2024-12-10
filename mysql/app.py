@@ -15,7 +15,8 @@ def connect_to_database():
         connection = mysql.connector.connect(
             host=MYSQL_HOST,
             user=MYSQL_USER,
-            password=MYSQL_PASSWORD
+            password=MYSQL_PASSWORD,
+            charset="utf8"
         )
         if connection.is_connected():
             print("✅ Successfully connected to the database!")
@@ -117,12 +118,13 @@ def initialize_database(connection):
         # 6. 백업 테이블 정리 이벤트 생성
         cursor.execute("DROP EVENT IF EXISTS reset_deleted_backup;")
         cursor.execute("""
-        CREATE EVENT reset_deleted_backup
-        ON SCHEDULE EVERY 1 DAY
-        STARTS CURRENT_TIMESTAMP + INTERVAL 1 DAY
-        DO
-        TRUNCATE TABLE deleted_employee_backup;
+            CREATE EVENT reset_deleted_backup
+            ON SCHEDULE EVERY 1 MINUTE
+            STARTS CURRENT_TIMESTAMP + INTERVAL 1 MINUTE
+            DO
+            TRUNCATE TABLE deleted_employee_backup;
         """)
+
 
         # 7. 뷰 생성 (부서별 급여 요약)
         cursor.execute("""
