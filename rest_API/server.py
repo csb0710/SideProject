@@ -8,19 +8,16 @@ import aiomysql
 
 app = FastAPI()
 
-# MySQL 연결 설정
 DB_CONFIG = {
     "host": "localhost",
     "port": 3306,
     "user": "root",
     "password": "0000",
-    "db": "black_friday",  # 사용할 데이터베이스
+    "db": "black_friday",  
 }
 
-# 캐시
 cache = {}
 
-# MySQL에 데이터베이스 생성 함수
 async def create_database_if_not_exists():
     conn = await aiomysql.connect(
         host=DB_CONFIG['host'],
@@ -33,7 +30,6 @@ async def create_database_if_not_exists():
         await conn.commit()
     conn.close()
 
-# 상품 데이터 삽입 및 갱신 함수
 async def initialize_products():
     endpoint = "/products"
     cache_key = endpoint
@@ -57,9 +53,9 @@ async def initialize_products():
             products = []
             for i in range(100):
                 name = f"Product {i+1}"
-                original_price = random.randint(100, 1000)  # 100 ~ 1000 사이 정수
-                discount_rate = random.randint(10, 50)  # 10% ~ 50% 할인율
-                discount_price = int(original_price * (1 - discount_rate / 100))  # 할인된 가격 계산
+                original_price = random.randint(100, 1000)
+                discount_rate = random.randint(10, 50)
+                discount_price = int(original_price * (1 - discount_rate / 100))
                 products.append((name, original_price, discount_price, discount_rate))
 
             await cur.executemany(
@@ -68,11 +64,9 @@ async def initialize_products():
             )
             await conn.commit()
 
-# DB에서 최신 상품 데이터 가져오기
 async def fetch_and_update_cache():
     async with aiomysql.connect(**DB_CONFIG) as conn:
         async with conn.cursor(aiomysql.DictCursor) as cur:
-            # 할인율 높은 상위 10개 상품 가져오기
             await cur.execute("SELECT id, name, original_price, discount_price, discount_rate FROM products ORDER BY discount_rate DESC LIMIT 10")
             products = await cur.fetchall()
             return products
@@ -82,7 +76,6 @@ async def update_discount_rate_and_price_periodically():
     while True:
         async with aiomysql.connect(**DB_CONFIG) as conn:
             async with conn.cursor() as cur:
-                # 할인율과 할인 가격을 랜덤으로 갱신
                 await cur.execute("""
                     UPDATE products
                     SET discount_rate = ROUND(RAND() * 50 + 10),
@@ -100,14 +93,12 @@ async def update_discount_rate_and_price_periodically():
 
         await asyncio.sleep(60)
 
-# 1분마다 DB 갱신 작업 시작
 @app.on_event("startup")
 async def startup_event():
     await create_database_if_not_exists()
     await initialize_products()
     asyncio.create_task(update_discount_rate_and_price_periodically())
 
-# 상품 데이터 API
 @app.get("/products")
 async def get_products(request: Request):
     cache_key = "/products"

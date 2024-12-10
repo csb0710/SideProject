@@ -2,7 +2,7 @@
 
 sudo apt update
 
-sudo apt install -y python3 python3-pip python3-venv
+sudo apt install -y python3 python3-pip
 sudo apt install -y uvicorn
 
 if [ -f "requirements.txt" ]; then
