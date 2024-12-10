@@ -2,7 +2,8 @@
 
 sudo apt update
 
-sudo apt install -y python3 python3-pip
+sudo apt install -y python3 python3-pip python3-venv
+sudo apt install -y uvicorn
 
 if [ -f "requirements.txt" ]; then
     echo "requirements.txt 파일이 발견되었습니다. 패키지를 설치합니다..."

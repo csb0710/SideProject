@@ -34,4 +34,4 @@ echo "Docker 및 Compose V2 설치를 확인합니다..."
 docker --version
 docker compose version
 
-sudo chmod 660 /var/run/docker.sock
+sudo chmod 666 /var/run/docker.sock
